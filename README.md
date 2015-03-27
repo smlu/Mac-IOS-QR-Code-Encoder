@@ -20,7 +20,7 @@ License
 QRCode source is released under the terms of the MIT license. See [LICENSE](LICENSE) for more
 information or see http://opensource.org/licenses/MIT.
 
-The Demo App is released unter terms of the GPLv3 license. See [demo/LICENCE-GPLv3](LICENCE-GPLv3) for more
+The Demo App is released unter terms of the GPLv3 license. See [LICENCE-GPLv3](demo/LICENCE-GPLv3) for more
 information or see http://opensource.org/licenses/GPL-3.0.
 
 
