@@ -5,9 +5,12 @@ Usage
 -----
 
 QRCode * qr = [[QRCode alloc] init];
+
 UIImage * qrImage = [qr getImage:@"encode this string"];
 
+
 you can also use static method to generate qr image:
+
 NSImage * qrImage = [QRCode getImage:@"encode this string, using static methode"];
 
 
