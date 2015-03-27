@@ -3,16 +3,15 @@ Allows you to create QR Codes for MAC and IOS. It's based on libqrencode C libra
 
 Usage
 -----
-
+```objc
 QRCode * qr = [[QRCode alloc] init];
-
 UIImage * qrImage = [qr getImage:@"encode this string"];
-
+```
 
 you can also use static method to generate qr image:
-
+```objc
 NSImage * qrImage = [QRCode getImage:@"encode this string, using static methode"];
-
+```
 
 License
 -------
