@@ -4,7 +4,30 @@ Thumbs.db
 *.DS_Store
 *.empty
 
+.Trashes
+*.swp
+*~.nib
 # mac deployment helpers
 switch
 index
+
+# xcode
 Entitlements.plist
+DerivedData/
+build/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+!default.pbxuser
+!default.mode1v3
+!default.mode2v3
+!default.perspectivev3
+xcuserdata
+xcuserdata/**/*
+!xcuserdata/**/xcschemes/*
+*.moved-aside
+*.xccheckout
+*.hmap
+*.ipa
+*.xcuserstate
