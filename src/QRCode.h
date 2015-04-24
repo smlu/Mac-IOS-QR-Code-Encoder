@@ -26,19 +26,27 @@
     typedef NSColor Color;
 #endif
 
-@interface QRCode : NSObject 
-@property (retain, nonatomic) Color* backgroundColor;
-@property (retain, nonatomic) Color* color;
-@property (retain, nonatomic) NSString* text;
+@interface QRCode : NSObject
 @property (strong, nonatomic, readonly) Image* image;
+@property (strong, nonatomic) NSString* text;
+@property (strong, nonatomic) NSData* data;
+@property (strong, nonatomic) Color* backgroundColor;
+@property (strong, nonatomic) Color* color;
 @property (nonatomic) NSInteger margin;
 @property (nonatomic) NSInteger size;
 
 -(id)initWithString:(NSString*) string;
 -(id)initWithString:(NSString*) string size:(NSInteger)size;
 -(id)initWithString:(NSString*) string color:(Color*) color backgroundColor:(Color*)backgroundColor;
--(id)initWithString:(NSString*) string size:(NSInteger)size color:(Color*) color backgroundColor:(Color*)backgroundColor;;
+-(id)initWithString:(NSString*) string size:(NSInteger)size color:(Color*) color backgroundColor:(Color*)backgroundColor;
+
+-(id)initWithData:(NSData*)data;
+-(id)initWithData:(NSData*)data size:(NSInteger)size;
+-(id)initWithData:(NSData*)data color:(Color*) color backgroundColor:(Color*)backgroundColor;
+-(id)initWithData:(NSData*)data size:(NSInteger)size color:(Color*) color backgroundColor:(Color*)backgroundColor;
 
 +(Image*)encode:(NSString*) string;
 +(Image*)encode:(NSString*) string size:(NSInteger)size margin:(NSInteger)margin color:(Color*)color backgroundColor:(Color*)backgroundColor;
++(Image*)encodeData:(NSData*)data;
++(Image*)encodeData:(NSData *)data size:(NSInteger)size margin:(NSInteger)margin color:(Color*)color backgroundColor:(Color*)backgroundColor;
 @end
