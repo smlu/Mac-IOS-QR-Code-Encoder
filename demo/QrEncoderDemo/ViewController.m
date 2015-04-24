@@ -18,11 +18,11 @@
 
 
 #import "ViewController.h"
-
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+   
     textField.delegate = self;
     textFieldCharCount = [[textField stringValue] length];
     
@@ -33,10 +33,10 @@
     imageView.layer.masksToBounds = YES;
 
     /* init qrcode with size */
-    qrGen = [[QRCode alloc] initWithSize:imageView.frame.size.width];
+    qrcode = [[QRCode alloc] initWithString:[textField stringValue] size:imageView.frame.size.width];
     
     /* set new qr image from textField */
-    [imageView setImage: [qrGen getImage: [textField stringValue]]];
+    [imageView setImage: qrcode.image];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -47,16 +47,16 @@
     
     /* update qr image margin */
     if([[textField stringValue] length] < 138)
-        qrGen.margin = 1;
+        qrcode.margin = 1;
     else if(([[textField stringValue] length] % 138) == 0){
         if(textFieldCharCount < [[textField stringValue] length])
-            ++qrGen.margin;
+            ++qrcode.margin;
         else
-            --qrGen.margin;
+            --qrcode.margin;
     }
     
-    /* set new qr image from textField */
-    [imageView setImage: [qrGen getImage: [textField stringValue]]];
+    qrcode.text = [textField stringValue];
+    [imageView setImage: qrcode.image];
     textFieldCharCount = [[textField stringValue] length];
 }
 

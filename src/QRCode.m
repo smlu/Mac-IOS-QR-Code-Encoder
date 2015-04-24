@@ -60,10 +60,12 @@
 //----------------------------------------------
 @implementation QRCode
 @synthesize backgroundColor = _backgroundColor;
-@synthesize color = _color;
+@synthesize color  = _color;
 @synthesize margin = _margin;
-@synthesize size = _size;
-@synthesize text = _text;
+@synthesize size   = _size;
+@synthesize text   = _text;
+@synthesize image  = _image;
+
 
 -(id)init {
     if ( self = [super init] ) {
@@ -71,26 +73,38 @@
         _color = DEFAULT_COLOR;
         _margin = DEFAULT_MARGIN;
         _size = DEFAULT_SIZE;
+        _text = @"";
     }
     return self;
 }
--(id)initWithSize:(int) size {
-    if( self = [ self init ] ){
+
+-(id)initWithString:(NSString*)string {
+    if( self = [self init] ){
+        self.text = string;
+    }
+    return self;
+}
+
+-(id)initWithString:(NSString*)string size:(NSInteger)size {
+    if( self = [self init] ){
+        self.text = string;
         self.size = size;
     }
     return self;
 }
 
--(id)initWithColor:(Color*) color backgroundColor:(Color*)backgroundColor {
-    if( self = [ self init ] ){
+-(id)initWithString:(NSString*)string  color:(Color*) color backgroundColor:(Color*)backgroundColor {
+    if( self = [self init] ){
+        self.text = string;
         self.color = color;
         self.backgroundColor = backgroundColor;
     }
     return self;
 }
 
--(id)initWithSizeAndColor:(int) size color:(Color*) color backgroundColor:(Color*)backgroundColor {
-    if( self = [ self init ] ){
+-(id)initWithString:(NSString*)string size:(NSInteger)size color:(Color*) color backgroundColor:(Color*)backgroundColor {
+    if( self = [self init] ){
+        self.text = string;
         self.color = color;
         self.backgroundColor = backgroundColor;
         self.size = size;
@@ -98,37 +112,26 @@
     return self;
 }
 
-- (void)dealloc {
+-(void)dealloc {
     self.text  = nil;
     self.color = nil;
     self.backgroundColor = nil;
 }
 
-- (Image*)getImage:(NSString*) stringToEncode{
-    return [QRCode getImage:stringToEncode size: self.size margin:self.margin color:self.color backgroundColor:self.backgroundColor];
++(Image*)encode:(NSString*)string {
+    return [QRCode encode:string size:DEFAULT_SIZE margin:DEFAULT_MARGIN color:DEFAULT_COLOR backgroundColor:DEFAULT_BACKGROUNDCOLOR];
 }
 
-- (Image*)getImage{
-    return [self getImage: _text];
-}
-
--(Image*)getImage:(NSString*) stringToEncode size:(int)size{
-    return [QRCode getImage:stringToEncode size:size margin:self.margin color:self.color backgroundColor:self.backgroundColor];
-}
-
-+(Image*)getImage:(NSString*) stringToEncode{
-    return [QRCode getImage:stringToEncode size:DEFAULT_SIZE margin:DEFAULT_MARGIN color:DEFAULT_COLOR backgroundColor:DEFAULT_BACKGROUNDCOLOR];
-}
-+(Image*)getImage:(NSString*) stringToEncode size:(int)size margin:(NSInteger)margin color:(Color*)color backgroundColor:(Color*)backgroundColor{
++(Image*)encode:(NSString*)string size:(NSInteger)size margin:(NSInteger)margin color:(Color*)color backgroundColor:(Color*)backgroundColor{
     
     /* do we have string to encode? */
-    if (0 == [stringToEncode length] && 7090 >= [stringToEncode length]) {
-        NSLog(@"%s [Line %d]  %s", __PRETTY_FUNCTION__, __LINE__, "Warning: stringToEncode is empty!");
+    if (0 == [string length] && 7090 >= [string length]) {
+        NSLog(@"%s [Line %d]  %s", __PRETTY_FUNCTION__, __LINE__, "Warning: stringToEncode is empty or longer then 7090 chars!");
         return nil;
     }
     
     /* generate Qr code */
-    QRcode  *qr_code  = QRcode_encodeString( [stringToEncode UTF8String], 0, QR_ECLEVEL_L, QR_MODE_8, 1 );
+    QRcode  *qr_code  = QRcode_encodeString( [string UTF8String], 0, QR_ECLEVEL_L, QR_MODE_8, 1 );
     
     /* was there an error generating the qr code? */
     if(qr_code == nil) {
@@ -136,11 +139,15 @@
         return nil;
     };
     
+    return [QRCode generateImage:qr_code size:size margin:margin color:color backgroundColor:backgroundColor];
+}
+
++(Image*) generateImage:(QRcode*)qrCode size:(NSInteger)size margin:(NSInteger)margin color:(Color*)color backgroundColor:(Color*)backgroundColor {
     /* qr data && parameters */
-    unsigned char* data = qr_code->data;
-    int qrSize      = qr_code->width;
+    unsigned char* data = qrCode->data;
+    int qrSize      = qrCode->width;
     int totalQrSize = qrSize + (2 * (int)margin);
-    int scale       = size / totalQrSize;
+    int scale       = (int)size / totalQrSize;
     int imageSize   = totalQrSize * scale;
     
     /* is requested size too small? */
@@ -167,7 +174,7 @@
     for ( int y = 0 ; y < qrSize; ++y ){
         for ( int x = 0 ; x < qrSize; ++x ){
             if( *data & 1 )
-            //if ( qr->data[ ( y * qrSize ) + x ] & 1 )
+                //if ( qr->data[ ( y * qrSize ) + x ] & 1 )
                 CGContextFillRect( ctx, CGRectMake( (margin + x ) * scale, ( margin + y ) * scale, scale, scale ) );
             data++;
         }
@@ -180,7 +187,33 @@
     /* clean up */
     CGImageRelease( imageRef );
     END_IMAGE_CONTEX
-    QRcode_free( qr_code );
+    QRcode_free( qrCode );
+    
     return retImage;
+}
+
+-(void) setText:(NSString *)text {
+    _text = text;
+    _image = [QRCode encode:_text size: self.size margin:self.margin color:self.color backgroundColor:self.backgroundColor];
+}
+
+-(void) setSize:(NSInteger)size {
+    _size = size;    
+    _image = [QRCode encode:_text size: self.size margin:self.margin color:self.color backgroundColor:self.backgroundColor];
+}
+
+-(void) setMargin:(NSInteger)margin {
+    _margin = margin;
+    _image = [QRCode encode:_text size: self.size margin:self.margin color:self.color backgroundColor:self.backgroundColor];
+}
+
+-(void) setColor:(Color *)color {
+    _color = color;
+    _image = [QRCode encode:_text size: self.size margin:self.margin color:self.color backgroundColor:self.backgroundColor];
+}
+
+-(void) setBackgroundColor:(Color *)backgroundColor {
+    _backgroundColor = backgroundColor;
+    _image = [QRCode encode:_text size: self.size margin:self.margin color:self.color backgroundColor:self.backgroundColor];
 }
 @end

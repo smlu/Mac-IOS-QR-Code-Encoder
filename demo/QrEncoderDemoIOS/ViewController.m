@@ -49,7 +49,7 @@
     imageView.layer.masksToBounds = YES;    
     
     // set qr image from textView
-    [imageView setImage: [QRCode getImage:[textView text]]];
+    [imageView setImage: [QRCode encode:[textView text]]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -72,7 +72,7 @@
         [textViewer resignFirstResponder];
     }
     
-    [imageView setImage: [QRCode getImage:[textView text]]];
+    [imageView setImage: [QRCode encode:[textView text]]];
     return YES;
 }
 

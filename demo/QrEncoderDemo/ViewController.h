@@ -22,8 +22,7 @@
 @interface ViewController : NSViewController <NSTextFieldDelegate> {
     IBOutlet NSImageView  * imageView;
     IBOutlet NSTextField *  textField;
-    QRCode * qrGen;
+    QRCode * qrcode;
     size_t textFieldCharCount;
 }
 @end
-
